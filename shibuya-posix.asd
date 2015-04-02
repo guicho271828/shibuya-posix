@@ -27,5 +27,6 @@
   :components ((:module "src"
                 :components
                 ((:file "package"))))
-  :description "Provides a complete CFFI interface to posix standards"
+  :description "Provides a complete CFFI interface to ALL posix standard
+  header files"
   :in-order-to ((test-op (load-op :shibuya-posix.test))))
