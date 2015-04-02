@@ -12,20 +12,29 @@ headers = aio arpa/inet assert complex cpio ctype dirent dlfcn errno fcntl	\
         sys/utsname sys/wait syslog tar termios tgmath time trace ulimit	\
         unistd utime utmpx wchar wctype wordexp
 
-target = i
+targets = $(foreach h,$(headers),$(h).$(1))
 
 .PHONY: all clean
 
-all: $(foreach h,$(headers),$(h).$(target))
+xml:  $(call targets,xml)
+tags: $(call targets,tags)
+i:    $(call targets,i)
+
 
 %.o: %.c
 	-$(CC) $< -o $@
 
-%.tags: %.pp
-	etags 
+%.tags: %.i
+	etags $<
 
 %.i: %.c
 	$(CC) -E -save-temps $< > $@
+
+%.xml: %.c
+	gccxml $< -fxml=$@
+
+posix.c: write-posix.sh
+	./write-posix.sh
 
 %.c: write-c.sh
 	mkdir -p $(*D)
