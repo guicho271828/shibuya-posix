@@ -22,7 +22,8 @@
   :author "Masataro Asai"
   :mailto "guicho2.71828@gmail.com"
   :license "LLGPL"
-  :depends-on (:cffi :trivia :alexandria)
+  :defsystem-depends-on (:cffi-grovel)
+  :depends-on (:cffi)
   :components ((:module "src"
                 :components
                 ((:file "package"))))

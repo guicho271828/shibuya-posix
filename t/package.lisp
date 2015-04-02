@@ -7,8 +7,7 @@
 (defpackage :shibuya-posix.test
   (:use :cl
         :shibuya-posix
-        :fiveam
-        :cffi :trivia :alexandria))
+        :fiveam))
 (in-package :shibuya-posix.test)
 
 

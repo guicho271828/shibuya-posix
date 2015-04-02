@@ -5,7 +5,7 @@
 
 (in-package :cl-user)
 (defpackage shibuya-posix
-  (:use :cl :cffi :trivia :alexandria))
+  (:use :cl :cffi))
 (in-package :shibuya-posix)
 
 ;; blah blah blah.
