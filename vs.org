@@ -1,0 +1,86 @@
+
+
+| posix          | libfixposix |
+|----------------+-------------|
+| aio.h          |             |
+| arpa/inet.h    |             |
+| assert.h       |             |
+| complex.h      |             |
+| cpio.h         |             |
+| ctype.h        |             |
+| dirent.h       | y           |
+| dlfcn.h        |             |
+| errno.h        | y           |
+| fcntl.h        | y           |
+| fenv.h         |             |
+| float.h        |             |
+| fmtmsg.h       |             |
+| fnmatch.h      |             |
+| ftw.h          |             |
+| glob.h         |             |
+| grp.h          |             |
+| iconv.h        |             |
+| inttypes.h     |             |
+| iso646.h       |             |
+| langinfo.h     |             |
+| libgen.h       |             |
+| limits.h       |             |
+| locale.h       |             |
+| math.h         |             |
+| monetary.h     |             |
+| mqueue.h       |             |
+| ndbm.h         |             |
+| net/if.h       |             |
+| netdb.h        |             |
+| netinet/in.h   |             |
+| netinet/tcp.h  |             |
+| nl_types.h     |             |
+| poll.h         |             |
+| pthread.h      |             |
+| pwd.h          |             |
+| regex.h        |             |
+| sched.h        |             |
+| search.h       |             |
+| semaphore.h    |             |
+| setjmp.h       |             |
+| signal.h       | y           |
+| spawn.h        | y           |
+| stdarg.h       |             |
+| stdbool.h      |             |
+| stddef.h       |             |
+| stdint.h       |             |
+| stdio.h        |             |
+| stdlib.h       | y           |
+| string.h       | y           |
+| strings.h      |             |
+| stropts.h      |             |
+| sys/ipc.h      |             |
+| sys/mman.h     | y           |
+| sys/msg.h      |             |
+| sys/resource.h | y           |
+| sys/select.h   | y           |
+| sys/sem.h      |             |
+| sys/shm.h      |             |
+| sys/socket.h   | y           |
+| sys/stat.h     | y           |
+| sys/statvfs.h  |             |
+| sys/time.h     |             |
+| sys/times.h    |             |
+| sys/types.h    |             |
+| sys/uio.h      |             |
+| sys/un.h       |             |
+| sys/utsname.h  |             |
+| sys/wait.h     | y           |
+| syslog.h       | y           |
+| tar.h          |             |
+| termios.h      |             |
+| tgmath.h       |             |
+| time.h         | y           |
+| trace.h        |             |
+| ulimit.h       |             |
+| unistd.h       | y           |
+| utime.h        |             |
+| utmpx.h        |             |
+| wchar.h        |             |
+| wctype.h       |             |
+| wordexp.h      |             |
