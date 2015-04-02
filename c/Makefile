@@ -14,7 +14,7 @@ headers = aio arpa/inet assert complex cpio ctype dirent dlfcn errno fcntl	\
 
 targets = $(foreach h,$(headers),$(h).$(1))
 
-.PHONY: all clean
+.PHONY: all clean xml tags i
 
 xml:  $(call targets,xml)
 tags: $(call targets,tags)
@@ -31,7 +31,7 @@ i:    $(call targets,i)
 	$(CC) -E -save-temps $< > $@
 
 %.xml: %.c
-	gccxml $< -fxml=$@
+	-gccxml $< -fxml=$@
 
 posix.c: write-posix.sh
 	./write-posix.sh
