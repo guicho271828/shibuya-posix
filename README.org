@@ -1,7 +1,5 @@
 
-* Shibuya-Posix  - Provides a complete CFFI interface to posix standards
-
-** Usage
+* Shibuya-Posix  - Provides a complete CFFI interface to ALL posix standard header files
 
 ** Dependencies
 
@@ -14,16 +12,7 @@ Also, it depends on the following libraries:
 + cffi by James Bielman  <jamesjb@jamesjb.com> ::
     The Common Foreign Function Interface
 
-+ trivia by Masataro Asai ::
-    NON-optimized pattern matcher compatible with OPTIMA, with extensible optimizer interface and clean codebase
-
-+ alexandria by  ::
-    Alexandria is a collection of portable public domain utilities.
-
-
-
-** Installation
-
++ gccxml :: available from =apt-get install gccxml= on debian and ubuntu
 
 ** Author
 
