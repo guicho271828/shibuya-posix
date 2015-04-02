@@ -12,17 +12,24 @@ headers = aio arpa/inet assert complex cpio ctype dirent dlfcn errno fcntl	\
         sys/utsname sys/wait syslog tar termios tgmath time trace ulimit	\
         unistd utime utmpx wchar wctype wordexp
 
+target = i
+
 .PHONY: all clean
 
-all: $(foreach h,$(headers),$(h).o)
+all: $(foreach h,$(headers),$(h).$(target))
 
 %.o: %.c
 	-$(CC) $< -o $@
+
+%.tags: %.pp
+	etags 
+
+%.i: %.c
+	$(CC) -E -save-temps $< > $@
 
 %.c: write-c.sh
 	mkdir -p $(*D)
 	./write-c.sh $* > $@
 
 clean:
-	git clean -df
-	-rm *.o
+	git clean -dxf
