@@ -1,5 +1,10 @@
 
-* Shibuya-Posix  - Provides a complete CFFI interface to ALL posix standard header files
+* Shibuya-Posix
+
+Goal: Provides a complete CFFI interface to ALL posix standard header files
+
+Taking a different path from libfixposix.
+How can it be automated?
 
 ** Dependencies
 
