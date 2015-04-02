@@ -23,7 +23,7 @@
   :mailto "guicho2.71828@gmail.com"
   :license "LLGPL"
   :defsystem-depends-on (:cffi-grovel)
-  :depends-on (:cffi)
+  :depends-on (:cffi :trivia :alexandria)
   :components ((:module "src"
                 :components
                 ((:file "package"))))
