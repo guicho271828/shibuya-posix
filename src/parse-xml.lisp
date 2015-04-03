@@ -2,18 +2,18 @@
 
 ;; blah blah blah.
 
-(defun posix-xml-parse (xml) ;; aio, pthread, etc
+(defun xml-root (xml) ;; aio, pthread, etc
   (with-open-file (s xml)
     (plump:parse s)))
 
 (defun xml-body (xml)
-  (child-elements (find-if #'gcc-xml-p (children (posix-xml-parse xml)))))
+  (child-elements (find-if #'gcc-xml-p (children (xml-root xml)))))
 
 (defun gcc-xml-p (dom)
   (match dom
     ((element (tag-name "GCC_XML")) t)))
 
-(defvar *body*)
+(defvar *root*)
 
 (defmacro define-gccxml-tag-predicate (tag-name-string)
   (let ((type (intern (format nil "%~:@(~a~)" tag-name-string)))
@@ -44,8 +44,8 @@
 (defpattern referenced-type (subpattern)
   (with-gensyms (id)
     `(and (string* #\_)
-          (guard ,id (get-element-by-id *body* ,id)
-                 (get-element-by-id *body* ,id)
+          (guard ,id (get-element-by-id *root* ,id)
+                 (get-element-by-id *root* ,id)
                  ,subpattern))))
 
 (defun split (str)
@@ -63,8 +63,8 @@
                ((list* #\_ rest)
                 (rec rest))
                (_ x))))
-    (mapcar #'string (rec (coerce string 'list)))))
-  
+    (coerce (rec (coerce string 'list)) 'string)))
+
 (defun %parse-type (string)
   (ematch (split string)
     ((list type)
@@ -118,10 +118,10 @@
        ;; anonymous : symbolic constant
        `(progn
           ,@(mapcar
-             (lambda (x) `(cffi-grovel::constant ,(read-from-string x) ,x))
+             (lambda (x) `(constant ,(read-from-string x) ,x))
              elist)))
       (_
-       `(cffi-grovel::cenum ,name
+       `(cenum ,name
                ,@(mapcar
                   (lambda (x) `(,(read-from-string x) ,x))
                   elist))))))
@@ -159,7 +159,7 @@
 (defun typedef-grovel-form (dom)
   (ematch dom
     ((%typedef name)
-     `(cffi-grovel::ctype ,(make-keyword (string-upcase name)) ,name))))
+     `(ctype ,(make-keyword (string-upcase name)) ,name))))
 
 #+nil
 (map 'list #'typedef-grovel-form (%typedefs "aio"))
@@ -168,7 +168,7 @@
 (defun %union-name (dom) (%name dom))
 (defun %union-members (dom)
   (remove-if-not #'fourth ;; type is NIL
-                 (mapcar (lambda (m) (let ((node (get-element-by-id *body* m)))
+                 (mapcar (lambda (m) (let ((node (get-element-by-id *root* m)))
                                        (list (intern (string-upcase (%name node)))
                                              (%name node)
                                              :type (%type node))))
@@ -177,7 +177,7 @@
   (ematch dom
     ((%union name members)
      (and name
-          `(cffi-grovel::cunion ,(intern (string-upcase name)) ,name
+          `(cunion ,(intern (string-upcase name)) ,name
                                 ,members)))))
 
 #+nil
@@ -189,7 +189,7 @@
 (defun %struct-name (dom) (%name dom))
 (defun %struct-members (dom)
   (remove-if-not #'fourth ;; type is NIL
-                 (mapcar (lambda (m) (let ((node (get-element-by-id *body* m)))
+                 (mapcar (lambda (m) (let ((node (get-element-by-id *root* m)))
                                        (list (intern (string-upcase (%name node)))
                                              (%name node)
                                              :type (%type node))))
@@ -198,7 +198,7 @@
   (ematch dom
     ((%struct name members)
      (and name
-          `(cffi-grovel::cstruct
+          `(cstruct
             ,(intern (string-upcase name)) ,name
             ,members)))))
 
@@ -222,15 +222,20 @@
 
 ;;; make-groveller-form
 
-(defun make-groveller-form (xml)
-  `(progn
-     (cffi-grovel::include ,xml)
-     ,@(remove nil (map 'list #'enum-grovel-form (%enumerations xml)))
-     ,@(remove nil (map 'list #'typedef-grovel-form (%typedefs xml)))
-     ,@(remove nil (map 'list #'union-grovel-form (%unions xml)))
-     ,@(remove nil (map 'list #'struct-grovel-form (%structs xml)))))
+(defun make-groveller-form (xml &optional
+                                  (package-name
+                                   (package-name *package*)))
+  (let ((*root* (xml-root xml)))
+    `(progn
+       (include ,xml)
+       (in-package ,package-name)
+       ,@(remove nil (map 'list #'enum-grovel-form (%enumerations xml)))
+       ,@(remove nil (map 'list #'typedef-grovel-form (%typedefs xml)))
+       ,@(remove nil (map 'list #'union-grovel-form (%unions xml)))
+       ,@(remove nil (map 'list #'struct-grovel-form (%structs xml))))))
 
 (defun make-cffi-load-form (xml)
-  `(progn
-     ,@(remove nil (map 'list #'function-cffi-form
-                        (remove-if #'%builtin-p (%functions xml))))))
+  (let ((*root* (xml-root xml)))
+    `(progn
+       ,@(remove nil (map 'list #'function-cffi-form
+                          (remove-if #'%builtin-p (%functions xml)))))))

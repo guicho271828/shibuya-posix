@@ -17,17 +17,26 @@
 (defun generate-grovel-file (header-name
                              &optional (*default-pathname-defaults*
                                         *default-pathname-defaults*))
-  (let ((p (merge-pathnames (format nil "~a.lisp" header-name)))
-        (form (make-groveller-form (header-xml header-name))))
+  (let ((p (merge-pathnames (format nil "~a-grovel.lisp" header-name)))
+        (pkg (package-name *package*)))
     (with-open-file (s p
                        :direction :output
                        :if-does-not-exist :create
                        :if-exists :supersede)
-      (write form :stream s))
+      (let ((*package* (find-package "SHIBUYA-POSIX.SYMBOLS")))
+        (write (make-groveller-form (header-xml header-name) pkg) :stream s)))
     p))
 
-;; (let ((*package* (find-package "CFFI-GROVEL")))
+(defun generate-cffi-file (header-name
+                             &optional (*default-pathname-defaults*
+                                        *default-pathname-defaults*))
+  (let ((p (merge-pathnames (format nil "~a-cffi.lisp" header-name)))
+        (pkg (package-name *package*)))
+    (with-open-file (s p
+                       :direction :output
+                       :if-does-not-exist :create
+                       :if-exists :supersede)
+      (print `(in-package ,pkg) s)
+      (print (make-cffi-load-form (header-xml header-name)) s))
+    p))
 
-;; (asdf:system-relative-pathname
-;;                       :shibuya-posix
-;;                       (format nil "c/~a.xml" header))
