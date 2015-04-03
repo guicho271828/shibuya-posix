@@ -14,11 +14,12 @@ headers = aio arpa/inet assert complex cpio ctype dirent dlfcn errno fcntl	\
 
 targets = $(foreach h,$(headers),$(h).$(1))
 
-.PHONY: all clean xml tags i
+.PHONY: all clean xml tags i c
 
 xml:  $(call targets,xml)
 tags: $(call targets,tags)
 i:    $(call targets,i)
+c:    $(call targets,c)
 
 
 %.o: %.c
@@ -28,7 +29,8 @@ i:    $(call targets,i)
 	etags $<
 
 %.i: %.c
-	$(CC) -E -save-temps $< > $@
+	-$(CC) -E -save-temps $< > $@
+	-sed -e "s/^#.*//g" -e "/^\s*$$/d" -i $@
 
 %.xml: %.c
 	-gccxml $< -fxml=$@
