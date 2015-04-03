@@ -15,6 +15,7 @@ headers = aio arpa/inet assert complex cpio ctype dirent dlfcn errno fcntl	\
 targets = $(foreach h,$(headers),$(h).$(1))
 
 .PHONY: all clean xml tags i c
+.SECONDARY: %.c
 
 xml:  $(call targets,xml)
 tags: $(call targets,tags)
