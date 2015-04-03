@@ -49,13 +49,17 @@
                  ,subpattern))))
 
 (defun split (str)
-  (labels ((rec (str current acc)
-             (match str
-               ((list* #\Space rest)
-                (rec rest nil (cons (nreverse current) acc)))
-               ((list* c rest)
-                (rec rest (cons c current) acc)))))
-    (mapcar #'string (nreverse (rec (coerce str 'list) nil nil)))))
+  (ematch str
+    ((string*)
+     (labels ((rec (str current acc)
+                (ematch str
+                  ((list* #\Space rest)
+                   (rec rest nil (cons (nreverse current) acc)))
+                  ((list* c rest)
+                   (rec rest (cons c current) acc))
+                  (nil (nreverse (cons (nreverse current) acc))))))
+       (mapcar (lambda (x) (coerce x 'string))
+               (rec (coerce str 'list) nil nil))))))
 
 (defun remove-underscores (string)
   (labels ((rec (x)
@@ -69,7 +73,7 @@
   (ematch (split string)
     ((list type)
      (make-keyword (string-upcase type)))
-    ((and types (list* _ _ _))
+    ((and types (type list))
      (mapcar (lambda (type) (make-keyword (string-upcase type)))
              types))))
 
@@ -82,7 +86,7 @@
                                        "Union"
                                        "Field"
                                        "Enumeration")))))
-     (ignore-errors (%parse-type (%name node))))
+     (%parse-type (%name node)))
     ((referenced-type
       (and node (element (tag-name (or "PointerType"
                                        "ArrayType"
@@ -91,7 +95,7 @@
      #+nil
      (values :pointer (%type node)))
     ((not (string* #\_))
-     (ignore-errors (%parse-type typename)))))
+     (%parse-type typename))))
 
 (defun %extern-p (dom)
   (attribute dom "extern"))
@@ -145,7 +149,7 @@
   (and (%extern-p dom)
        (not (%builtin-p dom))))
 (defun function-cffi-form (dom)
-  (match dom
+  (ematch dom
     ((%function name arguments return-type)
      `(cffi:defcfun (,(read-from-string name) ,name) ,return-type
         ,@arguments))))
