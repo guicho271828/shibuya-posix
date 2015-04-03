@@ -8,8 +8,10 @@
     (clear-output s)
     (close s)
     (let ((xml (make-pathname :defaults p :type "xml")))
+      (format t "~&; Extracting the XML metadata of ~a in ~a..." p xml)
       (uiop:run-program
        (format nil "gccxml ~a -fxml=~a" p xml)
+       :ignore-error-status t
        :output *standard-output*
        :error-output *error-output*)
       xml)))
